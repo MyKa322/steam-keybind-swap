@@ -1,0 +1,9 @@
+"config"
+{
+	"bindings"
+	{
+		"\"		"toggleconsole"
+		"F11"		"hud_toggle_visibility"
+		"f"		"+_e6cd36_F"
+	}
+}

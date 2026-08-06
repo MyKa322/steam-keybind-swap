@@ -1,0 +1,50 @@
+name: Release
+
+# Установщик собирается при пуше тега вида v1.0.0 и прикладывается к релизу,
+# чтобы ссылка «скачать» никогда не указывала на файл, собранный вручную.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Проверка типов
+        run: npm run typecheck
+
+      - name: Тесты
+        run: npm test
+
+      - name: Сборка бандлов
+        run: npx electron-vite build
+
+      - name: Сборка установщика
+        run: npx electron-builder --win --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer
+          path: release/*.exe
+
+      - name: Публикация релиза
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.exe
+          generate_release_notes: true

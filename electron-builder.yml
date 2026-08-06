@@ -1,0 +1,19 @@
+appId: com.keybindswap.app
+productName: Keybind Swap
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**/*
+  - package.json
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  artifactName: KeybindSwap-${version}-setup.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  shortcutName: Keybind Swap
