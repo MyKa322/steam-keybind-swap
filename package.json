@@ -7,10 +7,10 @@
   "license": "MIT",
   "private": true,
   "type": "module",
-  "homepage": "https://github.com/mykaaaa1/steam-keybind-swap",
+  "homepage": "https://github.com/MyKa322/steam-keybind-swap",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mykaaaa1/steam-keybind-swap.git"
+    "url": "git+https://github.com/MyKa322/steam-keybind-swap.git"
   },
   "scripts": {
     "dev": "electron-vite dev",

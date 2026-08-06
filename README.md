@@ -8,7 +8,7 @@
 
 ## Скачать
 
-**[⬇ Скачать установщик для Windows](https://github.com/mykaaaa1/steam-keybind-swap/releases/latest)**
+**[⬇ Скачать установщик для Windows](https://github.com/MyKa322/steam-keybind-swap/releases/latest)**
 
 Установка не требует прав администратора. При первом запуске Windows SmartScreen
 покажет предупреждение «Неизвестный издатель» — приложение не подписано
