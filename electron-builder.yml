@@ -10,7 +10,11 @@ win:
   target:
     - target: nsis
       arch: [x64]
-  artifactName: KeybindSwap-${version}-setup.${ext}
+  # Имя без версии намеренно: по адресу
+  # releases/latest/download/KeybindSwap-Setup.exe скачивание начинается сразу
+  # и ссылка не ломается при выпуске новой версии. Версия видна в названии
+  # релиза и в самом приложении.
+  artifactName: KeybindSwap-Setup.${ext}
 nsis:
   oneClick: false
   perMachine: false

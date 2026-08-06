@@ -8,7 +8,9 @@
 
 ## Скачать
 
-**[⬇ Скачать установщик для Windows](https://github.com/MyKa322/steam-keybind-swap/releases/latest)**
+**[⬇ Скачать установщик для Windows](https://github.com/MyKa322/steam-keybind-swap/releases/latest/download/KeybindSwap-Setup.exe)**
+
+Ссылка всегда ведёт на свежую версию. [Все выпуски и список изменений](https://github.com/MyKa322/steam-keybind-swap/releases).
 
 Установка не требует прав администратора. При первом запуске Windows SmartScreen
 покажет предупреждение «Неизвестный издатель» — приложение не подписано
