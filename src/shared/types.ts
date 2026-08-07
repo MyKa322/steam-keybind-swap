@@ -283,6 +283,11 @@ export interface AppSettings {
   patchRemoteCache: boolean
   /** Разрешить перенос при запущенном Steam — опасно, по умолчанию выключено */
   allowWhenSteamRunning: boolean
+  /**
+   * Записывать имя аккаунта-источника в экспортируемый файл.
+   * Выключается, если файл уходит постороннему: ник в наборе настроек не нужен.
+   */
+  includeAccountNameInExport: boolean
   lastAppId: string
   lastSourceAccountId: string | null
 }

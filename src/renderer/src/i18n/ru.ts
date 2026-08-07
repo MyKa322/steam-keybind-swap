@@ -34,7 +34,8 @@ export const ru = {
   'source.bundleFiles': 'файлов в наборе',
   'source.export': 'Сохранить в файл',
   'source.exportHint': 'Выгрузить настройки выбранного аккаунта в один файл .d2keys',
-  'source.includeLabel': 'Включить имя аккаунта в файл',
+  'source.exportDisabled': 'Сначала выберите аккаунт-источник ниже',
+  'source.includeLabel': 'Включать имя аккаунта в экспортируемый файл',
 
   'targets.hint': 'Можно отметить несколько — настройки раскатятся на все сразу',
   'targets.selectAll': 'Выбрать все',
@@ -176,6 +177,8 @@ export const ru = {
   'settings.allowSteamRunning': 'Разрешить перенос при запущенном Steam',
   'settings.allowSteamRunningDesc':
     'Снимает защиту. Скопированные файлы почти наверняка будут перезаписаны при выходе из Steam.',
+  'settings.includeLabelDesc':
+    'Ник аккаунта-источника попадёт в файл и будет виден тому, кому вы его отправите. Выключите, если делитесь раскладкой с посторонними.',
   'settings.backupsFolder': 'Папка резервных копий',
   'settings.dangerous': 'опасно',
 

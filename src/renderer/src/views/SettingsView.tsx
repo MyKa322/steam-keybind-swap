@@ -69,6 +69,24 @@ export function SettingsView({ t }: { t: Translate }): JSX.Element {
           <input
             className="check-input"
             type="checkbox"
+            checked={settings.includeAccountNameInExport}
+            onChange={() =>
+              void updateSettings({
+                includeAccountNameInExport: !settings.includeAccountNameInExport
+              })
+            }
+          />
+          <Check on={settings.includeAccountNameInExport} />
+          <span>
+            <span className="group__title">{t('source.includeLabel')}</span>
+            <span className="group__desc">{t('settings.includeLabelDesc')}</span>
+          </span>
+        </label>
+
+        <label className="toggle-row">
+          <input
+            className="check-input"
+            type="checkbox"
             checked={settings.allowWhenSteamRunning}
             onChange={() =>
               void updateSettings({ allowWhenSteamRunning: !settings.allowWhenSteamRunning })

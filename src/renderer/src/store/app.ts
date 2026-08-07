@@ -78,7 +78,7 @@ interface AppStore {
   restoreBackup(backupId: string): Promise<void>
   deleteBackup(backupId: string): Promise<void>
   revealBackup(backupId: string): Promise<void>
-  exportBundle(includeSourceLabel: boolean): Promise<void>
+  exportBundle(): Promise<void>
   updateSettings(patch: Partial<AppSettings>): Promise<void>
   pickSteamFolder(): Promise<void>
   toast(kind: Toast['kind'], text: string): void
@@ -364,8 +364,8 @@ export const useApp = create<AppStore>((set, get) => ({
     await window.api.backups.reveal(backupId)
   },
 
-  async exportBundle(includeSourceLabel) {
-    const { appId, sourceAccountId, groupIds } = get()
+  async exportBundle() {
+    const { appId, sourceAccountId, groupIds, settings } = get()
     if (!sourceAccountId) return
     try {
       const savedPath = unwrap(
@@ -373,7 +373,7 @@ export const useApp = create<AppStore>((set, get) => ({
           appId,
           accountId: sourceAccountId,
           groupIds,
-          includeSourceLabel
+          includeSourceLabel: settings?.includeAccountNameInExport ?? true
         })
       )
       if (savedPath) get().toast('success', `Сохранено: ${savedPath}`)

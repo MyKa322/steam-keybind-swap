@@ -32,7 +32,8 @@ export const en: Dict = {
   'source.bundleFiles': 'files in bundle',
   'source.export': 'Save to file',
   'source.exportHint': 'Export the selected account settings into a single .d2keys file',
-  'source.includeLabel': 'Include account name in the file',
+  'source.exportDisabled': 'Pick a source account below first',
+  'source.includeLabel': 'Include the account name in exported files',
 
   'targets.hint': 'Pick several — settings roll out to all of them at once',
   'targets.selectAll': 'Select all',
@@ -174,6 +175,8 @@ export const en: Dict = {
   'settings.allowSteamRunning': 'Allow transfer while Steam is running',
   'settings.allowSteamRunningDesc':
     'Removes the guard. Copied files will almost certainly be overwritten when Steam exits.',
+  'settings.includeLabelDesc':
+    'The source account nickname is stored in the file and visible to anyone you send it to. Turn this off when sharing a layout with strangers.',
   'settings.backupsFolder': 'Backups folder',
   'settings.dangerous': 'risky',
 

@@ -1,6 +1,6 @@
 {
   "name": "steam-keybind-swap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Перенос игровых биндов и настроек между аккаунтами Steam (Dota 2, CS2)",
   "main": "./out/main/index.js",
   "author": "MyKa322",

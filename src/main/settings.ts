@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   patchRemoteCache: true,
   // Перенос при запущенном Steam почти гарантированно будет перезаписан
   allowWhenSteamRunning: false,
+  includeAccountNameInExport: true,
   lastAppId: '570',
   lastSourceAccountId: null
 }
@@ -58,6 +59,10 @@ function sanitize(raw: unknown): AppSettings {
       typeof value.allowWhenSteamRunning === 'boolean'
         ? value.allowWhenSteamRunning
         : DEFAULT_SETTINGS.allowWhenSteamRunning,
+    includeAccountNameInExport:
+      typeof value.includeAccountNameInExport === 'boolean'
+        ? value.includeAccountNameInExport
+        : DEFAULT_SETTINGS.includeAccountNameInExport,
     lastAppId:
       typeof value.lastAppId === 'string' && /^\d+$/.test(value.lastAppId)
         ? value.lastAppId

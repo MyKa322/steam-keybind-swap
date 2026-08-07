@@ -63,8 +63,8 @@ window.api = {
   backups: { list: () => ok([]), restore: () => ok(null), remove: () => ok(null), reveal: () => ok(null) },
   bundle: { export: () => ok(null), pick: () => ok(null) },
   settings: {
-    get: () => ok({ language: 'ru', steamPathOverride: null, patchRemoteCache: true, allowWhenSteamRunning: false, lastAppId: '570', lastSourceAccountId: '100000001' }),
-    set: (patch) => ok({ language: 'ru', steamPathOverride: null, patchRemoteCache: true, allowWhenSteamRunning: false, lastAppId: '570', lastSourceAccountId: null, ...patch })
+    get: () => ok({ language: 'ru', steamPathOverride: null, patchRemoteCache: true, allowWhenSteamRunning: false, includeAccountNameInExport: true, lastAppId: '570', lastSourceAccountId: null }),
+    set: (patch) => ok({ language: 'ru', steamPathOverride: null, patchRemoteCache: true, allowWhenSteamRunning: false, includeAccountNameInExport: true, lastAppId: '570', lastSourceAccountId: null, ...patch })
   },
   window: { minimize() {}, toggleMaximize() {}, close() {}, onMaximizedChanged: () => () => {} }
 };

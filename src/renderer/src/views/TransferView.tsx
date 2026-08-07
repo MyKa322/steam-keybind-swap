@@ -76,11 +76,20 @@ export function TransferView({ t, locale }: { t: Translate; locale: string }): J
         title={t('section.source')}
         hint={t('source.hint')}
         action={
-          store.sourceAccountId ? (
-            <button className="btn btn--link" onClick={() => void store.exportBundle(true)}>
-              {t('source.export')}
-            </button>
-          ) : null
+          /*
+           * Кнопка показывается всегда, даже без выбранного источника. Раньше
+           * она появлялась только после выбора аккаунта — на первом запуске
+           * источник не выбран, и целой функции экспорта в интерфейсе просто
+           * не было видно.
+           */
+          <button
+            className="btn btn--ghost btn--small"
+            disabled={!store.sourceAccountId}
+            title={store.sourceAccountId ? t('source.exportHint') : t('source.exportDisabled')}
+            onClick={() => void store.exportBundle()}
+          >
+            {t('source.export')}
+          </button>
         }
       >
         {store.bundle ? (

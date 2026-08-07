@@ -32,7 +32,8 @@ export const uk: Dict = {
   'source.bundleFiles': 'файлів у наборі',
   'source.export': 'Зберегти у файл',
   'source.exportHint': 'Вивантажити налаштування обраного акаунта в один файл .d2keys',
-  'source.includeLabel': 'Включити ім’я акаунта у файл',
+  'source.exportDisabled': 'Спершу оберіть акаунт-джерело нижче',
+  'source.includeLabel': 'Включати ім’я акаунта в експортований файл',
 
   'targets.hint': 'Можна позначити кілька — налаштування розкотяться на всі одразу',
   'targets.selectAll': 'Обрати всі',
@@ -174,6 +175,8 @@ export const uk: Dict = {
   'settings.allowSteamRunning': 'Дозволити перенесення із запущеним Steam',
   'settings.allowSteamRunningDesc':
     'Знімає захист. Скопійовані файли майже напевно буде перезаписано під час виходу зі Steam.',
+  'settings.includeLabelDesc':
+    'Нік акаунта-джерела потрапить у файл і буде видно тому, кому ви його надішлете. Вимкніть, якщо ділитеся розкладкою зі сторонніми.',
   'settings.backupsFolder': 'Тека резервних копій',
   'settings.dangerous': 'небезпечно',
 
