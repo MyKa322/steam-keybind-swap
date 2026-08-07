@@ -165,10 +165,10 @@ export function TransferView({ t, locale }: { t: Translate; locale: string }): J
           {game?.groups.map((group) => (
             <label key={group.id} className="group">
               <input
+                className="check-input"
                 type="checkbox"
                 checked={store.groupIds.includes(group.id)}
                 onChange={() => store.toggleGroup(group.id)}
-                style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
               />
               <Check on={store.groupIds.includes(group.id)} />
               <span>
@@ -185,11 +185,33 @@ export function TransferView({ t, locale }: { t: Translate; locale: string }): J
 
       {store.plan ? (
         <Section title={t('section.preview')}>
+          {store.planStale ? (
+            <Notice
+              kind="warn"
+              icon={<IconWarning />}
+              title={t('preview.stale')}
+              actions={
+                <button
+                  className="btn btn--primary btn--small"
+                  disabled={!canBuild || store.planLoading}
+                  onClick={() => void store.buildPlan()}
+                >
+                  {t('action.buildPlan')}
+                </button>
+              }
+            >
+              {t('preview.staleBody')}
+            </Notice>
+          ) : null}
+
           {writeCount === 0 ? (
             <Empty>{t('preview.nothingToDo')}</Empty>
           ) : (
             store.plan.targets.map((target) => (
-              <div className="preview" key={target.accountId}>
+              <div
+                className={`preview${store.planStale ? ' preview--stale' : ''}`}
+                key={target.accountId}
+              >
                 <div className="preview__head">
                   <span className="dim">{t('preview.target')}</span>
                   <span className="preview__target">{target.label}</span>
@@ -234,7 +256,7 @@ export function TransferView({ t, locale }: { t: Translate; locale: string }): J
 
         <button
           className="btn btn--green"
-          disabled={!store.plan || writeCount === 0 || store.applying}
+          disabled={!store.plan || store.planStale || writeCount === 0 || store.applying}
           onClick={() => void store.apply()}
         >
           {store.applying ? <Spinner /> : null}
@@ -242,11 +264,13 @@ export function TransferView({ t, locale }: { t: Translate; locale: string }): J
         </button>
 
         <span className="actionbar__summary">
-          {store.plan
-            ? `${t('preview.willWrite')} ${writeCount} · ${store.plan.targets.length} × ${t('preview.target').toLowerCase()}`
-            : store.targetIds.length === 0
-              ? t('targets.none')
-              : t('preview.empty')}
+          {store.planStale
+            ? t('preview.stale')
+            : store.plan
+              ? `${t('preview.willWrite')} ${writeCount} · ${store.plan.targets.length} × ${t('preview.target').toLowerCase()}`
+              : store.targetIds.length === 0
+                ? t('targets.none')
+                : t('preview.empty')}
         </span>
         <span className="actionbar__spacer" />
       </div>

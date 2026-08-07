@@ -100,6 +100,9 @@ export const en: Dict = {
     'The process list could not be read — usually system policy or antivirus. Close Steam manually. To stop the app blocking the transfer, enable “Allow transfer while Steam is running” in Settings.',
 
   'preview.empty': 'Press “Preview changes” to see the file list',
+  'preview.stale': 'This list is out of date — your selection changed',
+  'preview.staleBody':
+    'What you see below is the previous calculation. Run it again to see what the new selection would change.',
   'preview.nothingToDo': 'Everything already matches — nothing to copy',
   'preview.willWrite': 'Files to be written:',
   'preview.target': 'Recipient',

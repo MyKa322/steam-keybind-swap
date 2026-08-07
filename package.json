@@ -1,6 +1,6 @@
 {
   "name": "steam-keybind-swap",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Перенос игровых биндов и настроек между аккаунтами Steam (Dota 2, CS2)",
   "main": "./out/main/index.js",
   "author": "MyKa322",
@@ -14,6 +14,7 @@
   },
   "scripts": {
     "dev": "electron-vite dev",
+    "ui": "vite --config vite.ui-preview.config.ts",
     "build": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json && electron-vite build",
     "preview": "electron-vite preview",
     "dist": "npm run build && electron-builder --win",

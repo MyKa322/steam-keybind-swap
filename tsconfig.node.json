@@ -1,11 +1,15 @@
 {
   "include": [
     "electron.vite.config.ts",
+    "vite.ui-preview.config.ts",
     "src/main/**/*",
     "src/preload/**/*",
     "src/shared/**/*",
     "test/**/*"
   ],
+  // Тест стора проверяет код рендерера, ему нужны типы DOM — он относится
+  // к проекту tsconfig.web.json
+  "exclude": ["test/store.test.ts"],
   "compilerOptions": {
     "composite": true,
     "target": "ES2022",

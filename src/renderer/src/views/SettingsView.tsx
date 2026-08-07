@@ -53,10 +53,10 @@ export function SettingsView({ t }: { t: Translate }): JSX.Element {
       <Section title={t('nav.transfer')}>
         <label className="toggle-row">
           <input
+            className="check-input"
             type="checkbox"
             checked={settings.patchRemoteCache}
             onChange={() => void updateSettings({ patchRemoteCache: !settings.patchRemoteCache })}
-            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
           />
           <Check on={settings.patchRemoteCache} />
           <span>
@@ -67,12 +67,12 @@ export function SettingsView({ t }: { t: Translate }): JSX.Element {
 
         <label className="toggle-row">
           <input
+            className="check-input"
             type="checkbox"
             checked={settings.allowWhenSteamRunning}
             onChange={() =>
               void updateSettings({ allowWhenSteamRunning: !settings.allowWhenSteamRunning })
             }
-            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
           />
           <Check on={settings.allowWhenSteamRunning} />
           <span>

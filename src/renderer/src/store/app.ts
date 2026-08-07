@@ -43,6 +43,14 @@ interface AppStore {
   groupIds: string[]
 
   plan: TransferPlan | null
+  /**
+   * План построен, но выбор с тех пор изменился.
+   *
+   * Устаревший план не выбрасывается, а помечается: если убрать его из DOM,
+   * страница резко укорачивается, прокрутка прижимается к новому максимуму и
+   * пользователя выбрасывает из того места, которое он читал.
+   */
+  planStale: boolean
   planLoading: boolean
   preflight: PreflightResult | null
   applying: boolean
@@ -79,6 +87,15 @@ interface AppStore {
 
 let toastId = 0
 
+/**
+ * Помечает построенный план устаревшим, не трогая его содержимое.
+ * Если плана нет, состояние не меняется — иначе появлялось бы предупреждение
+ * об устаревании там, где показывать нечего.
+ */
+function staleUpdate(plan: TransferPlan | null): { planStale: boolean } | Record<string, never> {
+  return plan ? { planStale: true } : {}
+}
+
 export const useApp = create<AppStore>((set, get) => ({
   ready: false,
   view: 'transfer',
@@ -95,6 +112,7 @@ export const useApp = create<AppStore>((set, get) => ({
   groupIds: [],
 
   plan: null,
+  planStale: false,
   planLoading: false,
   preflight: null,
   applying: false,
@@ -144,12 +162,16 @@ export const useApp = create<AppStore>((set, get) => ({
       sourceAccountId !== null &&
       accounts.some((a) => a.accountId === sourceAccountId && a.games.some((g) => g.appId === appId))
 
+    // Смена игры — единственный случай, когда план действительно выбрасывается:
+    // он относился к другому набору файлов, а выбор источника и получателей
+    // всё равно сбрасывается
     set({
       appId,
       groupIds: defaultGroups(games, appId),
       sourceAccountId: sourceStillValid ? sourceAccountId : null,
       targetIds: [],
-      plan: null
+      plan: null,
+      planStale: false
     })
     if (settings) void window.api.settings.set({ lastAppId: appId })
     void get().refreshPreflight()
@@ -160,7 +182,7 @@ export const useApp = create<AppStore>((set, get) => ({
       sourceAccountId: accountId,
       bundle: null,
       targetIds: state.targetIds.filter((id) => id !== accountId),
-      plan: null
+      ...staleUpdate(state.plan)
     }))
     void window.api.settings.set({ lastSourceAccountId: accountId })
   },
@@ -173,14 +195,14 @@ export const useApp = create<AppStore>((set, get) => ({
         get().toast('error', `Набор собран для другой игры (appid ${bundle.appId})`)
         return
       }
-      set({ bundle, sourceAccountId: null, plan: null })
+      set((state) => ({ bundle, sourceAccountId: null, ...staleUpdate(state.plan) }))
     } catch (error) {
       get().toast('error', (error as Error).message)
     }
   },
 
   clearBundle() {
-    set({ bundle: null, plan: null })
+    set((state) => ({ bundle: null, ...staleUpdate(state.plan) }))
   },
 
   toggleTarget(accountId) {
@@ -188,19 +210,19 @@ export const useApp = create<AppStore>((set, get) => ({
       targetIds: state.targetIds.includes(accountId)
         ? state.targetIds.filter((id) => id !== accountId)
         : [...state.targetIds, accountId],
-      plan: null
+      ...staleUpdate(state.plan)
     }))
   },
 
   setAllTargets(selected) {
-    const { accounts, appId, sourceAccountId } = get()
+    const { accounts, appId, sourceAccountId, plan } = get()
     set({
       targetIds: selected
         ? accounts
             .filter((a) => a.games.some((g) => g.appId === appId) && a.accountId !== sourceAccountId)
             .map((a) => a.accountId)
         : [],
-      plan: null
+      ...staleUpdate(plan)
     })
   },
 
@@ -209,7 +231,7 @@ export const useApp = create<AppStore>((set, get) => ({
       groupIds: state.groupIds.includes(groupId)
         ? state.groupIds.filter((id) => id !== groupId)
         : [...state.groupIds, groupId],
-      plan: null
+      ...staleUpdate(state.plan)
     }))
   },
 
@@ -266,9 +288,9 @@ export const useApp = create<AppStore>((set, get) => ({
           groupIds
         })
       )
-      set({ plan })
+      set({ plan, planStale: false })
     } catch (error) {
-      set({ plan: null })
+      set({ plan: null, planStale: false })
       get().toast('error', (error as Error).message)
     } finally {
       set({ planLoading: false })
@@ -276,17 +298,20 @@ export const useApp = create<AppStore>((set, get) => ({
   },
 
   clearPlan() {
-    set({ plan: null })
+    set({ plan: null, planStale: false })
   },
 
   async apply() {
-    const plan = get().plan
-    if (!plan) return
+    const { plan, planStale } = get()
+    // Устаревший план применять нельзя: выбор изменился уже после его расчёта
+    if (!plan || planStale) return
 
     set({ applying: true })
     try {
       const result = unwrap(await window.api.transfer.apply(plan))
-      set({ applyResult: result, plan: null })
+      // План остаётся на экране, но помечается устаревшим: файлы уже
+      // скопированы, и прежние пометки «заменить» больше не соответствуют диску
+      set({ applyResult: result, planStale: true })
       await get().refreshAccounts()
       await get().loadBackups()
     } catch (error) {
