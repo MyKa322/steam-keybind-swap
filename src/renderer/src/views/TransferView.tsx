@@ -23,6 +23,8 @@ export function TransferView({ t, locale }: { t: Translate; locale: string }): J
       ? { kind: 'account', accountId: store.sourceAccountId }
       : null
 
+  /** Есть ли вообще кому переносить: аккаунт-источник получателем быть не может */
+  const hasTargets = accounts.some((a) => a.accountId !== store.sourceAccountId)
   const canBuild = source !== null && store.targetIds.length > 0 && store.groupIds.length > 0
   const writeCount =
     store.plan?.targets.reduce(
@@ -140,33 +142,59 @@ export function TransferView({ t, locale }: { t: Translate; locale: string }): J
         title={t('section.targets')}
         hint={t('targets.hint')}
         action={
-          <span className="row">
-            <button className="btn btn--link" onClick={() => store.setAllTargets(true)}>
-              {t('targets.selectAll')}
-            </button>
-            <button className="btn btn--link" onClick={() => store.setAllTargets(false)}>
-              {t('targets.clear')}
-            </button>
-          </span>
+          hasTargets ? (
+            <span className="row">
+              <button className="btn btn--link" onClick={() => store.setAllTargets(true)}>
+                {t('targets.selectAll')}
+              </button>
+              <button className="btn btn--link" onClick={() => store.setAllTargets(false)}>
+                {t('targets.clear')}
+              </button>
+            </span>
+          ) : null
         }
       >
-        <div className="accounts">
-          {accounts.map((account) => {
-            const isSource = account.accountId === store.sourceAccountId
-            return (
-              <AccountCard
-                key={account.accountId}
-                account={account}
-                appId={store.appId}
-                selected={store.targetIds.includes(account.accountId)}
-                disabled={isSource}
-                locale={locale}
-                t={t}
-                onClick={() => store.toggleTarget(account.accountId)}
-              />
-            )
-          })}
-        </div>
+        {/*
+          Аккаунт-получатель может быть ровно один и совпадать с источником —
+          так бывает у тех, кто держит по одному аккаунту за раз и выходит из
+          Steam, чтобы зайти в другой. Показывать им единственную серую
+          карточку и надпись «не выбрано получателей» бессмысленно: перенести
+          настройки прямо сейчас некуда, но сохранить их в файл можно.
+        */}
+        {hasTargets ? (
+          <div className="accounts">
+            {accounts.map((account) => {
+              const isSource = account.accountId === store.sourceAccountId
+              return (
+                <AccountCard
+                  key={account.accountId}
+                  account={account}
+                  appId={store.appId}
+                  selected={store.targetIds.includes(account.accountId)}
+                  disabled={isSource}
+                  locale={locale}
+                  t={t}
+                  onClick={() => store.toggleTarget(account.accountId)}
+                />
+              )
+            })}
+          </div>
+        ) : (
+          <Notice
+            title={t('targets.onlyOne')}
+            actions={
+              <button
+                className="btn btn--green"
+                disabled={!store.sourceAccountId}
+                onClick={() => void store.exportBundle()}
+              >
+                {t('source.export')}
+              </button>
+            }
+          >
+            {t('targets.onlyOneBody')}
+          </Notice>
+        )}
       </Section>
 
       <Section title={t('section.groups')} hint={t('groups.hint')}>
@@ -277,9 +305,12 @@ export function TransferView({ t, locale }: { t: Translate; locale: string }): J
             ? t('preview.stale')
             : store.plan
               ? `${t('preview.willWrite')} ${writeCount} · ${store.plan.targets.length} × ${t('preview.target').toLowerCase()}`
-              : store.targetIds.length === 0
-                ? t('targets.none')
-                : t('preview.empty')}
+              : !hasTargets
+                ? // Не ошибка, а состояние: переносить некуда, но экспорт доступен
+                  t('targets.onlyOne')
+                : store.targetIds.length === 0
+                  ? t('targets.none')
+                  : t('preview.empty')}
         </span>
         <span className="actionbar__spacer" />
       </div>

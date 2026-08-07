@@ -40,6 +40,9 @@ export const en: Dict = {
   'targets.clear': 'Clear',
   'targets.isSource': 'source',
   'targets.none': 'No recipients selected',
+  'targets.onlyOne': 'Nowhere to transfer yet — but you can save the settings',
+  'targets.onlyOneBody':
+    'No other account on this PC has this game. Save the settings to a file, sign in to Steam with another account and launch the game once — Steam only creates its settings folder after the first launch. Then come back and load the file via “＋ Load from file”.',
 
   'groups.hint': 'Files that will be copied',
 

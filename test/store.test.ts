@@ -1,6 +1,33 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import type { TransferPlan } from '../src/shared/types'
+import type { AppSettings, SteamAccount, TransferPlan } from '../src/shared/types'
 import { useApp } from '../src/renderer/src/store/app'
+
+const account = (accountId: string): SteamAccount => ({
+  accountId,
+  steamId64: `7656${accountId}`,
+  accountName: null,
+  personaName: `Аккаунт ${accountId}`,
+  avatarDataUrl: null,
+  lastLogin: null,
+  isAutoLogin: false,
+  games: [{ appId: '570', name: 'Dota 2', known: true, fileCount: 5, lastModified: null }]
+})
+
+const settingsWith = (lastSourceAccountId: string | null): AppSettings => ({
+  language: 'ru',
+  steamPathOverride: null,
+  patchRemoteCache: true,
+  allowWhenSteamRunning: false,
+  includeAccountNameInExport: true,
+  lastAppId: '570',
+  lastSourceAccountId
+})
+
+/** Подменяет ответ моста preload на список аккаунтов. */
+function stubAccounts(accounts: SteamAccount[]): void {
+  const api = (globalThis as unknown as { window: { api: Record<string, unknown> } }).window.api
+  api.accounts = { list: () => Promise.resolve({ ok: true, value: accounts }) }
+}
 
 /**
  * Защита от возврата бага с «улетающим» интерфейсом.
@@ -80,6 +107,36 @@ describe('состояние плана переноса', () => {
     useApp.getState().toggleGroup('keys')
 
     expect(useApp.getState().planStale).toBe(false)
+  })
+
+  it('единственный аккаунт с игрой выбирается источником сам', async () => {
+    // Частый случай: человек держит по одному аккаунту за раз и выходит из
+    // Steam, чтобы зайти в другой. Выбирать не из чего, а без выбранного
+    // источника недоступен экспорт пресета в файл.
+    stubAccounts([account('100000001')])
+    useApp.setState({ sourceAccountId: null, settings: settingsWith(null) })
+
+    await useApp.getState().refreshAccounts()
+
+    expect(useApp.getState().sourceAccountId).toBe('100000001')
+  })
+
+  it('при нескольких аккаунтах источник не угадывается', async () => {
+    stubAccounts([account('100000001'), account('100000002')])
+    useApp.setState({ sourceAccountId: null, settings: settingsWith(null) })
+
+    await useApp.getState().refreshAccounts()
+
+    expect(useApp.getState().sourceAccountId).toBeNull()
+  })
+
+  it('запомненный источник важнее автовыбора', async () => {
+    stubAccounts([account('100000001'), account('100000002')])
+    useApp.setState({ sourceAccountId: null, settings: settingsWith('100000002') })
+
+    await useApp.getState().refreshAccounts()
+
+    expect(useApp.getState().sourceAccountId).toBe('100000002')
   })
 
   it('устаревший план применить нельзя', async () => {

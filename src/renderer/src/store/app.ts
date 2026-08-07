@@ -242,12 +242,18 @@ export const useApp = create<AppStore>((set, get) => ({
       const { appId, sourceAccountId, settings } = get()
 
       const withGame = accounts.filter((a) => a.games.some((g) => g.appId === appId))
-      const preferred =
-        sourceAccountId ??
-        (settings?.lastSourceAccountId &&
+      const remembered =
+        settings?.lastSourceAccountId &&
         withGame.some((a) => a.accountId === settings.lastSourceAccountId)
           ? settings.lastSourceAccountId
-          : null)
+          : null
+
+      // Когда аккаунт с этой игрой всего один, выбирать не из чего — берём его
+      // сразу. Это частый случай: человек выходит из одного аккаунта, заходит
+      // в другой, и в каждый момент виден только текущий.
+      const onlyOne = withGame.length === 1 ? withGame[0].accountId : null
+
+      const preferred = sourceAccountId ?? remembered ?? onlyOne
 
       set({
         accounts,
